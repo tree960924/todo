@@ -28,10 +28,18 @@ footer a{
     color: cadetblue;
     background-color: white;
     transition: all 0.3s;
+    font-size: 14px;
+    padding: 5px;
 }
 
 .btn:hover, .btn:focus{
-    border:none;
+    border:1px solid transparent;
+    color: white;
+    background-color: cadetblue;
+}
+
+.toggleBtn[toggled]{
+    border:1px solid transparent;
     color: white;
     background-color: cadetblue;
 }
@@ -52,33 +60,47 @@ footer a{
 
 .todo_list_view{
     grid-area: todo_list_view;
+}
+
+.stateBtns{
+    margin: 10px;
+    display: flex;
+    justify-content: space-evenly;
+    
+}
+
+.stateBtns button{
+    flex-basis: 30%;
+}
+
+.todo_list{
     list-style: none;
     padding: 0px;
     margin: 10px;
     overflow: scroll;
 }
 
-.todo_list_view li{
+.todo_list li{
     border-bottom:1px cadetblue solid;
     padding: 10px 20px;
     transition-property: background-color;
     transition-duration: 0.3s;
 }
 
-.todo_list_view li:last-child{
+.todo_list li:last-child{
     border: none;
 }
 
-.todo_list_view li[selected]{
+.todo_list li[selected]{
     background-color:cadetblue;
 }
 
-.todo_list_view input:checked ~ label{
+.todo_list input:checked ~ label{
     text-decoration: line-through;
     color: gray;
 }
 
-.todo_list_view label{
+.todo_list label{
     cursor:pointer;
 }
 

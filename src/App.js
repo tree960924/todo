@@ -75,42 +75,81 @@ class App extends Component{
 class TodoListView extends Component{
    constructor(parent, props){
        super(parent, props);
-       this.$target = document.createElement('ul');
+       this.$target = document.createElement('div');
        this.$target.className = 'todo_list_view';
        this.$parent.appendChild(this.$target);
+       this.state = {
+           viewState : "all",
+           todoState : {}
+        }
        this.render();
        this.setEvent();
    }
 
    render(){
+       const stateBtns = `<div class="stateBtns">
+        <button class="btn toggleBtn" data-viewstate="all" ${this.state.viewState === "all" ? "toggled" : ""}>All</button>
+        <button class="btn toggleBtn" data-viewstate="active" ${this.state.viewState === "active" ? "toggled" : ""}>Active</button>
+        <button class="btn toggleBtn" data-viewstate="complete" ${this.state.viewState === "complete" ? "toggled" : ""}>Complete</button>
+       </div>`
+       const todoItem = (element, index) => {
+           return `
+            <li data-index="${index}" ${index === this.state.selectedIndex ? "selected" : ""}>
+                <input id="todo${index}" type="checkbox" ${this.state.todoState[index] === "complete" ? "checked" : ""}>
+                <label for="todo${index}">${element}</label>         
+            </li>`
+        }
        if(this.props.todoList === undefined){
            this.$target.innerHTML = `
            등록된 Todo가 없습니다.
            `
        }
        else{
-           this.$target.innerHTML = this.props.todoList.map((element, index)=>
-               `<li data-index="${index}" ${index === this.state.selectedIndex && "selected"}>
-                    <input id="todo${index}" type="checkbox">
-                    <label for="todo${index}">${element}</label>         
-                </li>`
-           ).join('');
+           this.$target.innerHTML = stateBtns +
+           `
+           <ul class="todo_list">
+           ${this.props.todoList.map((element, index) => {
+               if(this.state.viewState === 'all'){
+                   return todoItem(element, index);
+               }
+               else if(this.state.viewState === 'active'){
+                   if(this.state.todoState[index] === 'active' || this.state.todoState[index] === undefined) return todoItem(element, index);
+               }
+               else if(this.state.viewState === 'complete'){
+                   if(this.state.todoState[index] === 'complete') return todoItem(element, index);
+               }
+           }).join('')} 
+           </ul>`
        }
    }
 
    setEvent(){
        this.$target.addEventListener('click', (e)=>{
-           let index = e.target.dataset.index*1;
-           if(index >= 0){
+           let index = e.target.dataset.index;
+           if(index !== undefined){
+               index = index*1;
                this.props.onSelect(index);
                this.setState({selectedIndex : index});
                console.log(this.state);
            }
        })
+       this.$target.addEventListener('click', (e)=>{
+           let viewState = e.target.dataset.viewstate;
+           if(viewState){
+               this.setState({viewState : viewState});
+               console.log(this.state);
+           }
+       })
+       this.$target.addEventListener('change', (e)=>{
+           let index = e.target.closest('li').dataset.index;
+           this.state.todoState[index] === undefined || this.state.todoState[index] === "active"
+           ? this.setState({todoState : {...this.state.todoState, [index] : "complete"}})
+           : this.setState({todoState : {...this.state.todoState, [index] : "active"}});
+           console.log(this.state);
+       })
    }
 
    update(){
-       console.log('todoListView update called');
        this.setProps({todoList : this.parent.state.todoList});
    }
 }
