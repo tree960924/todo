@@ -125,7 +125,7 @@ class TodoListView extends Component{
                     <label for="todo${index}">${element}</label>    
                 </div>
                 <div class="btn_group">
-                    <button class="img_btn del_btn" data-index="${index}"><img src="trash_can.svg" width="16" height="16"></button>  
+                    <button class="img_btn del_btn" data-delindex="${index}"><img src="trash_can.svg" width="16" height="16"></button>  
                 </div>
                             
             </li>`
@@ -173,7 +173,8 @@ class TodoListView extends Component{
         })
         this.$target.addEventListener('click', (e)=>{
             if(e.target.closest('.del_btn')){
-                let delIndex = e.target.closest('.del_btn').dataset.index*1;
+                let delIndex = e.target.closest('.del_btn').dataset.delindex*1;
+                if(this.state.selectedIndex === delIndex) this.setState({selectedIndex : -1});
                 this.props.onDelete(delIndex);
             }
         })
