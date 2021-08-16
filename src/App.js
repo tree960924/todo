@@ -45,11 +45,15 @@ class App extends Component{
         this.state = {
             todoList : ['밥먹기', '일찍 자기', '공부하기'],
             memoList : ['알차게 밥먹기', '알차게 일찍 자기', '알차게 공부하기'],
+            todoState : ['active', 'active', 'active'],
             selectedMemo : ''
         }
         this.todoListView = new TodoListView(this, {
             todoList : this.state.todoList, 
-            onSelect : this.onSelect
+            todoState : this.state.todoState,
+            onSelect : this.onSelect,
+            onDelete : this.onDelete,
+            onTodoStateChange : this.onTodoStateChange
         });
         this.memoView = new MemoView(this, {
             memo : this.state.selectedMemo
@@ -57,6 +61,7 @@ class App extends Component{
         this.todoInput = new TodoInput(this, {
             onAdd : this.onAdd
         });
+        console.log(this.state);
     }
    
     onSelect = (index)=>{
@@ -66,92 +71,124 @@ class App extends Component{
     onAdd = (todo, memo)=>{
         this.setState({
             todoList : [...this.state.todoList, todo],
-            memoList : [...this.state.memoList, memo]
+            memoList : [...this.state.memoList, memo],
+            todoState : [...this.state.todoState, 'active']
+        })
+        console.log(this.state);
+    }
+
+    onTodoStateChange = (index)=>{
+        let toggled = this.state.todoState[index] === 'active' ? 'complete' : 'active';
+        this.setState({
+            todoState : [...this.state.todoState.slice(0, index), toggled, ...this.state.todoState.slice(index+1)]
+        })
+        console.log(this.state);
+    }
+
+    onDelete = (index)=>{
+        console.log(index);
+        this.setState({
+            todoList : [...this.state.todoList.slice(0, index), ...this.state.todoList.slice(index+1)],
+            memoList : [...this.state.memoList.slice(0, index), ...this.state.memoList.slice(index+1)],
+            todoState : [...this.state.todoState.slice(0, index), ...this.state.todoState.slice(index+1)],
+            selectedMemo : this.state.selectedMemo === this.state.memoList[index] ? "" : this.state.selectedMemo
         })
         console.log(this.state);
     }
 }
 
 class TodoListView extends Component{
-   constructor(parent, props){
-       super(parent, props);
-       this.$target = document.createElement('div');
-       this.$target.className = 'todo_list_view';
-       this.$parent.appendChild(this.$target);
-       this.state = {
-           viewState : "all",
-           todoState : {}
+    constructor(parent, props){
+        super(parent, props);
+        this.$target = document.createElement('div');
+        this.$target.className = 'todo_list_view';
+        this.$parent.appendChild(this.$target);
+        this.state = {
+            viewState : "all"
         }
-       this.render();
-       this.setEvent();
-   }
+        this.render();
+        this.setEvent();
+    }
 
-   render(){
-       const stateBtns = `<div class="stateBtns">
+    render(){
+        console.log(this.props.todoState);
+        const stateBtns = `<div class="stateBtns">
         <button class="btn toggleBtn" data-viewstate="all" ${this.state.viewState === "all" ? "toggled" : ""}>All</button>
         <button class="btn toggleBtn" data-viewstate="active" ${this.state.viewState === "active" ? "toggled" : ""}>Active</button>
         <button class="btn toggleBtn" data-viewstate="complete" ${this.state.viewState === "complete" ? "toggled" : ""}>Complete</button>
-       </div>`
-       const todoItem = (element, index) => {
-           return `
+        </div>`
+        const todoItem = (element, index) => {
+            return `
             <li data-index="${index}" ${index === this.state.selectedIndex ? "selected" : ""}>
-                <input id="todo${index}" type="checkbox" ${this.state.todoState[index] === "complete" ? "checked" : ""}>
-                <label for="todo${index}">${element}</label>         
+                <div class="todo">
+                    <input id="todo${index}" type="checkbox" ${this.props.todoState[index] === "complete" ? "checked" : ""}>
+                    <label for="todo${index}">${element}</label>    
+                </div>
+                <div class="btn_group">
+                    <button class="img_btn del_btn" data-index="${index}"><img src="trash_can.svg" width="16" height="16"></button>  
+                </div>
+                            
             </li>`
         }
-       if(this.props.todoList === undefined){
-           this.$target.innerHTML = `
-           등록된 Todo가 없습니다.
-           `
-       }
-       else{
-           this.$target.innerHTML = stateBtns +
-           `
-           <ul class="todo_list">
-           ${this.props.todoList.map((element, index) => {
-               if(this.state.viewState === 'all'){
-                   return todoItem(element, index);
-               }
-               else if(this.state.viewState === 'active'){
-                   if(this.state.todoState[index] === 'active' || this.state.todoState[index] === undefined) return todoItem(element, index);
-               }
-               else if(this.state.viewState === 'complete'){
-                   if(this.state.todoState[index] === 'complete') return todoItem(element, index);
-               }
-           }).join('')} 
-           </ul>`
-       }
-   }
+        if(this.props.todoList === undefined){
+            this.$target.innerHTML = `
+            등록된 Todo가 없습니다.
+            `
+        }
+        else{
+            this.$target.innerHTML = stateBtns +
+            `
+            <ul class="todo_list">
+            ${this.props.todoList.map((element, index) => {
+                if(this.state.viewState === 'all'){
+                    return todoItem(element, index);
+                }
+                else if(this.state.viewState === 'active'){
+                    if(this.props.todoState[index] === 'active') return todoItem(element, index);
+                }
+                else if(this.state.viewState === 'complete'){
+                    if(this.props.todoState[index] === 'complete') return todoItem(element, index);
+                }
+            }).join('')} 
+            </ul>`
+        }
+    }
 
-   setEvent(){
-       this.$target.addEventListener('click', (e)=>{
-           let index = e.target.dataset.index;
-           if(index !== undefined){
-               index = index*1;
-               this.props.onSelect(index);
-               this.setState({selectedIndex : index});
-               console.log(this.state);
-           }
-       })
-       this.$target.addEventListener('click', (e)=>{
-           let viewState = e.target.dataset.viewstate;
-           if(viewState){
-               this.setState({viewState : viewState});
-               console.log(this.state);
-           }
-       })
-       this.$target.addEventListener('change', (e)=>{
-           let index = e.target.closest('li').dataset.index;
-           this.state.todoState[index] === undefined || this.state.todoState[index] === "active"
-           ? this.setState({todoState : {...this.state.todoState, [index] : "complete"}})
-           : this.setState({todoState : {...this.state.todoState, [index] : "active"}});
-           console.log(this.state);
-       })
-   }
+    setEvent(){
+        this.$target.addEventListener('click', (e)=>{
+            let index = e.target.dataset.index;
+            if(index !== undefined){
+                index = index*1;
+                this.props.onSelect(index);
+                this.setState({selectedIndex : index});
+                console.log(this.state);
+            }
+        })
+        this.$target.addEventListener('click', (e)=>{
+            let viewState = e.target.dataset.viewstate;
+            if(viewState){
+                this.setState({viewState : viewState});
+                console.log(this.state);
+            }
+        })
+        this.$target.addEventListener('click', (e)=>{
+            if(e.target.closest('.del_btn')){
+                let delIndex = e.target.closest('.del_btn').dataset.index*1;
+                this.props.onDelete(delIndex);
+            }
+        })
+        this.$target.addEventListener('change', (e)=>{
+            let index = e.target.closest('li').dataset.index*1;
+            this.props.onTodoStateChange(index);
+        })
+    }
 
-   update(){
-       this.setProps({todoList : this.parent.state.todoList});
-   }
+    update(){
+        this.setProps({
+            todoList : this.parent.state.todoList,
+            todoState : this.parent.state.todoState
+        });
+    }
 }
 
 class MemoView extends Component{
