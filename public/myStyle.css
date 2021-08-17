@@ -222,12 +222,31 @@ footer a{
     background-color: transparent;
     border: none;
     cursor: pointer;
-    display: block;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
 }
 
-.img_btn img{
-    position: absolute;
-    top:50%;
-    left:50%;
-    transform: translate(-50%,-50%);
+.del_btn{
+    background-image:url('trash_can.svg');
+    background-size: contain;
+}
+
+
+.chk_btn{
+    display: inline-block;
+}
+
+.btn_group > *{
+    margin-left:5px;
+    margin-right: 5px;
+}
+
+.todo::before{
+    content : '•';
+    color: cadetblue;
+}
+
+.todo_list li[selected] .todo::before{
+    color: white;
 }

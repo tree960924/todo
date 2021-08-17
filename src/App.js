@@ -113,19 +113,19 @@ class TodoListView extends Component{
     render(){
         console.log(this.props.todoState);
         const stateBtns = `<div class="stateBtns">
-        <button class="btn toggleBtn" data-viewstate="all" ${this.state.viewState === "all" ? "toggled" : ""}>All</button>
-        <button class="btn toggleBtn" data-viewstate="active" ${this.state.viewState === "active" ? "toggled" : ""}>Active</button>
-        <button class="btn toggleBtn" data-viewstate="complete" ${this.state.viewState === "complete" ? "toggled" : ""}>Complete</button>
+            <button class="btn toggleBtn" data-viewstate="all" ${this.state.viewState === "all" ? "toggled" : ""}>All</button>
+            <button class="btn toggleBtn" data-viewstate="active" ${this.state.viewState === "active" ? "toggled" : ""}>Active</button>
+            <button class="btn toggleBtn" data-viewstate="complete" ${this.state.viewState === "complete" ? "toggled" : ""}>Complete</button>
         </div>`
         const todoItem = (element, index) => {
             return `
             <li data-index="${index}" ${index === this.state.selectedIndex ? "selected" : ""}>
                 <div class="todo">
-                    <input id="todo${index}" type="checkbox" ${this.props.todoState[index] === "complete" ? "checked" : ""}>
-                    <label for="todo${index}">${element}</label>    
+                ${element}   
                 </div>
                 <div class="btn_group">
-                    <button class="img_btn del_btn" data-delindex="${index}"><img src="trash_can.svg" width="16" height="16"></button>  
+                    <input class="chk_btn" type="checkbox" ${this.props.todoState[index] === "complete" ? "checked" : ""}>
+                    <button class="img_btn del_btn" data-delindex="${index}"></button>  
                 </div>
                             
             </li>`
