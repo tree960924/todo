@@ -1,0 +1,252 @@
+html, body{
+    margin: 0px;
+    font-size: 16px;
+}
+
+header{
+    text-align: center;
+    font-size: 30px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px gray solid;
+}
+
+
+footer{
+    font-size: 14px;
+    color: gray;
+    padding : 20px 0px;
+    text-align: center;
+    border-top: 1px solid gray;
+}
+
+footer a{
+    color: gray;
+}
+
+.btn{
+    border: 1px cadetblue solid;
+    color: cadetblue;
+    background-color: white;
+    transition: all 0.3s;
+    font-size: 14px;
+    padding: 5px;
+}
+
+.btn:hover, .btn:focus{
+    border:1px solid transparent;
+    color: white;
+    background-color: cadetblue;
+}
+
+.toggleBtn[toggled]{
+    border:1px solid transparent;
+    color: white;
+    background-color: cadetblue;
+}
+
+.btn:focus{
+    outline: none;
+}
+
+.todo_container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 350px 1fr;
+    grid-template-areas: 
+        "todo_list_view memo_view"
+        "todo_input todo_input";
+    margin: 10px 40px;
+}
+
+.todo_list_view{
+    grid-area: todo_list_view;
+}
+
+.stateBtns{
+    margin: 10px;
+    display: flex;
+    justify-content: space-evenly;
+    
+}
+
+.stateBtns button{
+    flex-basis: 30%;
+}
+
+.todo_list{
+    list-style: none;
+    padding: 0px;
+    margin: 10px;
+    overflow: scroll;
+}
+
+.todo_list li{
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom:1px cadetblue solid;
+    padding: 10px 20px;
+    transition-property: background-color;
+    transition-duration: 0.3s;
+}
+
+.todo_list li:last-child{
+    border: none;
+}
+
+.todo_list li[selected]{
+    background-color:cadetblue;
+}
+
+.todo_list input:checked ~ label{
+    text-decoration: line-through;
+    color: gray;
+}
+
+.todo_list label{
+    cursor:pointer;
+}
+
+.memo_view{
+    grid-area: memo_view;
+    margin: 10px;
+    padding: 10px;
+    border: 1px black solid;
+}
+
+.todo_input{
+    grid-area: todo_input;
+    margin: 10px;
+    position: relative;
+}
+
+.input_group{
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.input_group input{
+    display: block;
+    box-sizing: border-box;
+    padding: 10px 5px;
+    border: none;
+    border-bottom: 1px solid black;
+    font-size: 18px;
+    width: 300px;
+}
+
+.input_group input:focus{
+    outline: none;
+    border-bottom: 1px solid cadetblue;
+}
+
+.input_group input:valid{
+    border-bottom: 1px solid cadetblue;
+}
+
+.input_group .bar{
+    position: relative;
+    display: block;
+    width: 300px;
+}
+
+.input_group .bar::before, .input_group .bar::after{
+    content: '';
+    height: 1px;
+    width: 0;
+    position: absolute;
+    background-color: cadetblue;
+    transition: all 0.3s;
+}
+
+.input_group .bar::before{
+    left:50%;
+}
+
+.input_group .bar::after{
+    right:50%;
+}
+
+.input_group input:focus ~ .bar::before, 
+.input_group input:focus ~ .bar::after, 
+.input_group input:valid ~ .bar::before,
+.input_group input:valid ~ .bar::after{
+    width: 50%;
+} 
+
+.input_group label{
+    position: absolute;
+    top:4px;
+    left:3px;
+    font-size: 18px;
+    color: #999;
+    transition: all 0.3s;
+}
+
+.input_group input:focus ~ label, .input_group input:valid ~ label{
+    top:-20px;
+    font-size: 14px;
+    color:cadetblue;
+}
+
+.todo_input .btn_add{
+    display: block;
+    position: absolute;
+    float: right;
+    top:20px;
+    right: 0px;
+    width: 200px;
+    height: 42px;
+}
+
+.todo_input textarea{
+    width: 100%;
+    height: 200px;
+    resize: none;
+    font-size: 18px;
+    padding: 10px;
+    border: 1px solid black;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+.todo_input textarea:focus{
+    outline: none;
+    border: 1px solid cadetblue;
+}
+
+.img_btn{
+    position: relative;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+}
+
+.del_btn{
+    background-image:url('trash_can.svg');
+    background-size: contain;
+}
+
+
+.chk_btn{
+    display: inline-block;
+}
+
+.btn_group > *{
+    margin-left:5px;
+    margin-right: 5px;
+}
+
+.todo::before{
+    content : '•';
+    color: cadetblue;
+}
+
+.todo_list li[selected] .todo::before{
+    color: white;
+}
