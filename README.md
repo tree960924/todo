@@ -15,4 +15,3 @@ git clone 이후
 
 웹 브라우저에서 localhost:3000 접속
 
-//## Licence
